@@ -1,10 +1,9 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 
 import {TextField} from '../TextField';
 import {Button} from '../Button';
 import {Popover} from '../Popover';
 import {ActionList} from '../ActionList';
-import {Stack} from '../Stack';
 
 import styles from './PhoneField.scss';
 
@@ -15,9 +14,12 @@ interface Country {
   countryName: string;
   /** Country area code */
   countryCode: string;
+  /** Possible area codes for a country. Used to distinguish between countries with same country codes */
+  areaCodes?: number[];
+  /** An error message specific to the country */
+  errorMessage?: string;
   /** Phone number display format */
-  displayFormat: number[];
-  formatter?(): void;
+  formatter(phoneNumber: string): string | null;
 }
 
 export interface PhoneFieldProps {
@@ -30,7 +32,7 @@ export interface PhoneFieldProps {
   /** Is textfield optional */
   optional?: boolean;
   /** Error message */
-  errorMessage?: string;
+  errorMessage: string;
   /** Country list in dropdown */
   countries: Country[];
 }
@@ -43,11 +45,14 @@ export function PhoneField({
   optional,
   countries,
 }: PhoneFieldProps) {
-  const [value, setValue] = useState('555-555-5555');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState<
+    string | null
+  >(null);
   const [popoverActive, setPopoverActive] = useState(countries.length > 1);
-  const [selectedCountry, setSelectedCountry] = useState(
-    countries[0].countryName,
-  );
+  const [selectedCountry, setSelectedCountry] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+
   // Conduct research on which country appears first
   const [searchBarText, setSearchBarText] = useState('');
   const allCountries = countries.map(
@@ -58,9 +63,6 @@ export function PhoneField({
   );
 
   const [countryOptions, setCountryOptions] = useState(allCountries);
-
-  /** Callback function for handling when the text in the phone number changes */
-  const handleTextChange = useCallback((newValue) => setValue(newValue), []);
 
   /** Callback function for handling when the popover is clicked */
   const togglePopoverActive = useCallback(() => {
@@ -81,10 +83,10 @@ export function PhoneField({
   /** Callback function for handling the selected country */
   const handleSelected = useCallback(
     (index) => {
-      setSelectedCountry(countries[index].countryName);
+      setSelectedCountry(index);
       togglePopoverActive();
     },
-    [countries, togglePopoverActive],
+    [togglePopoverActive],
   );
 
   const retrieveCountries = useCallback(
@@ -114,44 +116,57 @@ export function PhoneField({
     [retrieveCountries],
   );
 
+  const buttonContent = `${countries[selectedCountry].countryName} (${countries[selectedCountry].countryCode})`;
+
   /** Handles the button that clicks for the popover */
   const activator =
     countries.length > 1 ? (
       <Button onClick={togglePopoverActive} disclosure>
-        {selectedCountry}
+        {buttonContent}
       </Button>
     ) : (
-      <Button>{selectedCountry}</Button>
+      <Button>{countries[selectedCountry].countryName}</Button>
     );
 
-  return (
-    <TextField
-      label={optional ? `${labelName} (optional)` : labelName}
-      type="tel"
-      placeholder={placeholder}
-      value={value}
-      onChange={handleTextChange}
-      labelHidden={labelHidden}
-      connectedLeft={
-        <Popover
-          active={popoverActive}
-          activator={activator}
-          onClose={togglePopoverActive}
-          preferredAlignment="left"
-        >
-          <div className={styles.Searchbar}>
-            <TextField
-              label="Store name"
-              value={searchBarText}
-              labelHidden
-              placeholder="Search for a country"
-              onChange={handleSearchBar}
-            />
-          </div>
+  /** Callback function for handling when the text in the phone number changes */
+  const handleFormat = (phoneNumber: string) =>
+    setFormattedPhoneNumber(countries[selectedCountry].formatter(phoneNumber));
 
-          <ActionList items={countryOptions} />
-        </Popover>
-      }
-    />
+  return (
+    <React.Fragment>
+      <TextField
+        label={optional ? `${labelName} (optional)` : labelName}
+        type="tel"
+        placeholder={placeholder}
+        value={formattedPhoneNumber || phoneNumber}
+        onChange={setPhoneNumber}
+        onBlur={() => {
+          handleFormat(phoneNumber);
+          setError(formattedPhoneNumber ? null : errorMessage);
+        }}
+        labelHidden={labelHidden}
+        connectedLeft={
+          <Popover
+            active={popoverActive}
+            activator={activator}
+            onClose={togglePopoverActive}
+            preferredAlignment="left"
+          >
+            <div className={styles.Searchbar}>
+              <TextField
+                label="Store name"
+                value={searchBarText}
+                labelHidden
+                placeholder="Search for a country"
+                onChange={handleSearchBar}
+              />
+            </div>
+
+            <ActionList items={countryOptions} />
+          </Popover>
+        }
+      />
+      {error}
+    </React.Fragment>
   );
 }
