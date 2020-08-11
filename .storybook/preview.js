@@ -86,17 +86,17 @@ addDecorator(
       components: [AppProviderWithKnobs],
       params: [
         {
-          name: 'Disabled',
+          name: 'Enable Light Mode',
           default: true,
-          props: {newDesignLanguage: false},
-        },
-        {
-          name: 'Enabled - Light Mode',
           props: {newDesignLanguage: true, colorScheme: 'light'},
         },
         {
-          name: 'Enabled - Dark Mode',
+          name: 'Enable Dark Mode',
           props: {newDesignLanguage: true, colorScheme: 'dark'},
+        },
+        {
+          name: 'Disable',
+          props: {newDesignLanguage: false},
         },
       ],
     },
