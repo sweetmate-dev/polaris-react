@@ -434,6 +434,7 @@ export function DetailsPage() {
           icon: ViewMinor,
         },
       ]}
+      secondaryTitleMetaData="May 8, 2020 at 7:31 am from Developer Tools (via import)"
       actionGroups={[
         {
           title: 'Promote',

@@ -130,8 +130,8 @@ $action-menu-rollup-computed-width: rem(40px);
 
   + .Row {
     margin-top: spacing();
-
     // stylelint-disable-next-line selector-max-combinators, selector-max-class
+    .newDesignLanguage &,
     .mobileView & {
       margin-top: spacing(tight);
     }
@@ -149,4 +149,12 @@ $action-menu-rollup-computed-width: rem(40px);
   align-content: flex-end;
   align-items: center;
   margin-left: spacing(tight);
+}
+
+.SecondaryTitleMetaData {
+  @include text-emphasis-subdued;
+
+  .hasBreadcrumb & {
+    margin-left: spacing() * 2 + spacing(extra-tight);
+  }
 }

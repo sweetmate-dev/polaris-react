@@ -88,7 +88,12 @@ export class ActionMenu extends PureComponent<ActionMenuProps, State> {
 
       const {content, onAction, ...rest} = action;
       return newDesignLanguage ? (
-        <Button key={index} onClick={onAction} {...rest}>
+        <Button
+          key={index}
+          onClick={onAction}
+          {...rest}
+          transparent={newDesignLanguage}
+        >
           {content}
         </Button>
       ) : (

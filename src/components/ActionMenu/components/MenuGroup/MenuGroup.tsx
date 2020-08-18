@@ -47,6 +47,7 @@ export function MenuGroup({
     <Button
       disclosure
       icon={icon}
+      transparent={newDesignLanguage}
       accessibilityLabel={accessibilityLabel}
       onClick={handleOpen}
     >

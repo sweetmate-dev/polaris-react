@@ -553,6 +553,12 @@ $stacking-order: (
   // stylelint-enable selector-max-class
 }
 
+.transparent {
+  &.newDesignLanguage {
+    background: var(--p-override-transparent);
+  }
+}
+
 // stylelint-enable selector-max-specificity
 
 .sizeSlim {

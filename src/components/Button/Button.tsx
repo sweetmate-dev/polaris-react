@@ -52,6 +52,8 @@ export interface ButtonProps {
   submit?: boolean;
   /** Renders a button that looks like a link */
   plain?: boolean;
+  /** Renders a button with a transparent background */
+  transparent?: boolean;
   /** Makes `plain` and `outline` Button colors (text, borders, icons) the same as the current text color. Also adds an underline to `plain` Buttons */
   monochrome?: boolean;
   /** Forces url to open in a new tab */
@@ -119,6 +121,7 @@ export function Button({
   destructive,
   disclosure,
   plain,
+  transparent,
   monochrome,
   submit,
   size = DEFAULT_SIZE,
@@ -151,6 +154,7 @@ export function Button({
     isDisabled && styles.disabled,
     loading && styles.loading,
     plain && styles.plain,
+    transparent && styles.transparent,
     pressed && !disabled && !url && styles.pressed,
     monochrome && styles.monochrome,
     size && size !== DEFAULT_SIZE && styles[variationName('size', size)],

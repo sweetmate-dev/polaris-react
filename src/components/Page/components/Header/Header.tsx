@@ -38,6 +38,8 @@ interface PrimaryAction
 export interface HeaderProps extends TitleProps {
   /** Visually hide the title */
   titleHidden?: boolean;
+  /** Non-interactive information shown below the title. */
+  secondaryTitleMetaData?: React.ReactNode;
   /** Adds a border to the bottom of the page header */
   separator?: boolean;
   /** Primary page-level action */
@@ -70,6 +72,7 @@ export function Header({
   primaryAction,
   pagination,
   additionalNavigation,
+  secondaryTitleMetaData,
   breadcrumbs = [],
   secondaryActions = [],
   actionGroups = [],
@@ -144,11 +147,18 @@ export function Header({
     styles.Header,
     titleHidden && styles.titleHidden,
     separator && styles.separator,
+    breadcrumbMarkup && styles.hasBreadcrumb,
     navigationMarkup && styles.hasNavigation,
     actionMenuMarkup && styles.hasActionMenu,
     isNavigationCollapsed && styles.mobileView,
     newDesignLanguage && styles.newDesignLanguage,
   );
+
+  const secondaryTitleMetaDataMarkup = secondaryTitleMetaData ? (
+    <div className={styles.SecondaryTitleMetaData}>
+      {secondaryTitleMetaData}
+    </div>
+  ) : null;
 
   if (newDesignLanguage) {
     const {slot1, slot2, slot3, slot4, slot5, slot6} = determineLayout({
@@ -158,6 +168,7 @@ export function Header({
       actionMenuMarkup,
       primaryActionMarkup,
       title,
+      secondaryTitleMetaDataMarkup,
       isNavigationCollapsed,
     });
 
@@ -283,14 +294,16 @@ function determineLayout({
   actionMenuMarkup,
   primaryActionMarkup,
   isNavigationCollapsed,
+  secondaryTitleMetaDataMarkup,
 }: {
-  breadcrumbMarkup: MaybeJSX;
-  pageTitleMarkup: JSX.Element;
   title?: string;
+  isNavigationCollapsed: boolean;
+  pageTitleMarkup: JSX.Element;
+  breadcrumbMarkup: MaybeJSX;
   paginationMarkup: MaybeJSX;
   actionMenuMarkup: MaybeJSX;
   primaryActionMarkup: MaybeJSX;
-  isNavigationCollapsed: boolean;
+  secondaryTitleMetaDataMarkup: MaybeJSX;
 }) {
   const shortTitle = 20;
   const reallyShortTitle = 8;
@@ -309,7 +322,7 @@ function determineLayout({
         slot2: pageTitleMarkup,
         slot3: actionMenuMarkup,
         slot4: primaryActionMarkup,
-        slot5: null,
+        slot5: secondaryTitleMetaDataMarkup,
         slot6: null,
       },
       condition:
@@ -321,10 +334,10 @@ function determineLayout({
     mobileDefault: {
       slots: {
         slot1: breadcrumbMarkup,
-        slot2: null,
+        slot2: pageTitleMarkup,
         slot3: actionMenuMarkup,
         slot4: primaryActionMarkup,
-        slot5: pageTitleMarkup,
+        slot5: secondaryTitleMetaDataMarkup,
         slot6: null,
       },
       condition: isNavigationCollapsed,
@@ -335,7 +348,7 @@ function determineLayout({
         slot2: pageTitleMarkup,
         slot3: null,
         slot4: primaryActionMarkup,
-        slot5: null,
+        slot5: secondaryTitleMetaDataMarkup,
         slot6: null,
       },
       condition:
@@ -349,9 +362,9 @@ function determineLayout({
       slots: {
         slot1: breadcrumbMarkup,
         slot2: pageTitleMarkup,
-        slot3: null,
+        slot3: actionMenuMarkup,
         slot4: paginationMarkup,
-        slot5: actionMenuMarkup,
+        slot5: secondaryTitleMetaDataMarkup,
         slot6: primaryActionMarkup,
       },
       condition: !isNavigationCollapsed,
