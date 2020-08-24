@@ -38,8 +38,6 @@ interface PrimaryAction
 export interface HeaderProps extends TitleProps {
   /** Visually hide the title */
   titleHidden?: boolean;
-  /** Non-interactive information shown below the title. */
-  secondaryTitleMetaData?: React.ReactNode;
   /** Adds a border to the bottom of the page header */
   separator?: boolean;
   /** Primary page-level action */
