@@ -41,6 +41,7 @@ describe('PolarisTestProvider', () => {
     it('allows isNavigationCollapsed to be overwritten', () => {
       function Component() {
         const {isNavigationCollapsed} = useMediaQuery();
+        // eeslint-disable-next-line jest/no-if
         return isNavigationCollapsed ? <div /> : null;
       }
 
